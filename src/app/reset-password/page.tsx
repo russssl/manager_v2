@@ -1,13 +1,20 @@
-import { type Metadata } from "next";
 import ResetPasswordForm from "@/components/reset-password-form";
-export const metadata: Metadata = {
-  title: "Reset Password",
-  description: "Reset your password",
-};
 
-export default async function Component() {
+export default async function ResetPasswordPage(
+  props: {
+    searchParams: Promise<{ token: string }>;
+  }
+) {
+  const searchParams = await props.searchParams;
+  if (!searchParams.token) {
+    return (
+      <div className="h-screen flex items-center justify-center overflow-hidden">
+        Invalid token
+      </div>
+    );
+  }
 
   return (
-    <ResetPasswordForm />
+    <ResetPasswordForm token={searchParams.token} />
   )
 }

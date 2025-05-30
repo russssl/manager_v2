@@ -2,9 +2,14 @@ import { type NextRequest, NextResponse } from "next/server";
 import { getSessionCookie } from "better-auth/cookies";
 
 export async function middleware(request: NextRequest) {
+  const publicPaths = ["/login", "/register", "/reset-password", "/forgot-password"];
+
+  if (publicPaths.some(path => request.nextUrl.pathname.startsWith(path))) {
+    return NextResponse.next();
+  }
+
   const sessionCookie = getSessionCookie(request);
   if (!sessionCookie) {
-    console.log("No session cookie found. Redirecting to login.");
     return NextResponse.redirect(new URL("/login", request.url).toString());
   }
 
@@ -13,6 +18,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|login|register|reset-password|static|$).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|login|register|reset-password|static|forgot-password|$).*)",
   ],
 };
